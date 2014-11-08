@@ -1,0 +1,28 @@
+ad22100-arduino-object-lib
+==========================
+
+Librairie arduino permettant d'utiliser une capteur de température AD22100.
+
+    /*
+		AD22100 Object lib 
+		REV 1.0 8/11/2014
+		M. Clerbois
+	*/
+
+    CLASS	ad22100
+
+    Constructors
+		ad22100(int adPin).
+		ad22100(int adPin, int tmin, int tmax).
+    	
+    Functions members
+		int read()
+		char * toString()
+		char * toString(int temp)
+		int reads(int nSamples,int delay)
+
+    inline functions members
+		void commaSeparator() 
+		void dotSeparator()
+
+
