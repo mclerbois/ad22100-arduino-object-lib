@@ -1,7 +1,8 @@
 /*
   Source File for the AD22100 Object lib 
   
-  REV 1.0 8/11/2014
+  REV 1.0  8/11/2014
+  REV 1.01 9/11/2014   change toString pour avoir toujours 5 caractères, ajout d'espace devant le nombre.
   
   M. Clerbois
 */
@@ -60,23 +61,32 @@ char *ad22100::toString()  // méthode réalisant la lecture de la température
 char *ad22100::toString(int temp)  // méthode réalisant la lecture de la température
 {
   char *p=&_str[5];
+  char n=2;
   *p--=0;
-  _str[0]=0;
+  _str[0]=' ';
   if (temp<0) {
 	_str[0]='-';
 	temp=-temp;
 	}
   *p--=temp%10+'0';
+
   temp=temp/10;
   *p--=_decimalSeparator;
+
   *p--=temp%10+'0'; //unité
+
   temp=temp/10;
   while (temp) {
-	*p--=temp%10+'0'; //unité
+	*p--=temp%10+'0'; //dizaine centaine
+	n--;
 	temp=temp/10;
 	}
-  if (_str[0])
+  if (_str[0]=='-') {
 	*p--='-';
+	n--;
+	}
+  while(n--)
+	*p--=' ';
   return ++p;
 }
 
