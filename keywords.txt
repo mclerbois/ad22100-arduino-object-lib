@@ -13,6 +13,9 @@ reads	KEYWORD2
 toString	KEYWORD2
 commaSeparator	KEYWORD2
 dotSeparator	KEYWORD2
+celsius	KEYWORD2
+fahrenheit	KEYWORD2
+kelvin	KEYWORD2
 
 #######################################
 # Instances (KEYWORD2)

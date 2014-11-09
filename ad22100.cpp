@@ -3,6 +3,7 @@
   
   REV 1.0  8/11/2014
   REV 1.01 9/11/2014   change toString pour avoir toujours 5 caractères, ajout d'espace devant le nombre.
+  REV 1.02 9/11/2014   change toString, add celsius fahrenheit kelvin conversion
   
   M. Clerbois
 */
@@ -15,7 +16,7 @@
 
 /* déclaration privée non accessible en dehors de ce fichier */
 #define  Tmin  	 -611   // nombre entier représente la température en 1/10 de degré
-#define  Tmax  	 1611  // nombre entier représente la température en 1/10 de degré
+#define  Tmax  	 1611   // nombre entier représente la température en 1/10 de degré
 #define  ADCMIN  0
 #define  ADCMAX  1023
 
@@ -26,8 +27,8 @@ ad22100::ad22100(int adPin, int tmin, int tmax) // constructeur de l'objet, reç
 {
   temperaturMin=tmin;
   temperaturMax=tmax;
-  capteurPin=adPin;
-  _decimalSeparator=',';
+  option.capteurPin=adPin;
+  option.unit=0;
 }
 /*****************************************************************************************/
 
@@ -36,58 +37,78 @@ ad22100::ad22100(int adPin) // autre constructeur on ne définit que la borne ut
 {
   temperaturMin=Tmin;
   temperaturMax=Tmax;
-  capteurPin=adPin;
-  _decimalSeparator=',';
+  option.capteurPin=adPin;
+  option.unit=0;
 }
 /*****************************************************************************************/
 
 //méthode de lecture
 int ad22100::read()  // méthode réalisant la lecture de la température
 {
-  return map(analogRead(capteurPin), ADCMIN, ADCMAX, temperaturMin, temperaturMax);
+  int mesure=map(analogRead(option.capteurPin), ADCMIN, ADCMAX, temperaturMin, temperaturMax);
+  switch (option.unit) { // REV 1.02 9/11/2014
+	case 1: //fahrenheit
+		mesure=(mesure*18+3200)/10;
+		break;
+	case 2: // kelvin
+		mesure= mesure+2732;
+		break;
+	}
+   return mesure;
 }
 
 /*****************************************************************************************/
 
 //méthode de lecture
-char *ad22100::toString()  // méthode réalisant la lecture de la température
+char * ad22100::toString()  // méthode réalisant la lecture de la température
 {
   return toString(read());
 }
 
 /*****************************************************************************************/
+static  char _ad22100_str[6]="  0,0";
+
+/*****************************************************************************************/
+
+void ad22100::commaSeparator() { // REV 1.02 9/11/2014
+		_ad22100_str[3]=',';
+		};
+/*****************************************************************************************/
+
+void ad22100::dotSeparator(){ // REV 1.02 9/11/2014
+		_ad22100_str[3]='.';
+		};
+		
+/*****************************************************************************************/
 
 //méthode de lecture
+// REV 1.02 9/11/2014
 char *ad22100::toString(int temp)  // méthode réalisant la lecture de la température
 {
-  char *p=&_str[5];
-  char n=2;
-  *p--=0;
-  _str[0]=' ';
+  char *p=&_ad22100_str[1];
   if (temp<0) {
-	_str[0]='-';
+	_ad22100_str[0]='-';
+	_ad22100_str[1]='-';
 	temp=-temp;
 	}
-  *p--=temp%10+'0';
-
+  else {
+	_ad22100_str[0]=' ';
+	_ad22100_str[1]=' ';
+	}
+	
+  _ad22100_str[4]=temp%10+'0';
   temp=temp/10;
-  *p--=_decimalSeparator;
-
-  *p--=temp%10+'0'; //unité
-
+  
+  _ad22100_str[2]=temp%10+'0'; //unité
   temp=temp/10;
+  
   while (temp) {
 	*p--=temp%10+'0'; //dizaine centaine
-	n--;
 	temp=temp/10;
 	}
-  if (_str[0]=='-') {
-	*p--='-';
-	n--;
-	}
-  while(n--)
-	*p--=' ';
-  return ++p;
+  if ( _ad22100_str[1]=='-' )
+	_ad22100_str[0]=' ';
+  return _ad22100_str;
 }
 
 /*****************************************************************************************/
