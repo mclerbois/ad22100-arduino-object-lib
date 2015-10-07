@@ -1,10 +1,8 @@
 /*
   Header File for the AD22100 Object lib 
-  
   REV 1.0 8/11/2014
   REV 1.01 9/11/2014   change toString pour avoir toujours 5 caractères, ajout d'espace devant le nombre.
   REV 1.02 9/11/2014   change toString, add celsius fahrenheit kelvin conversion
-  
   M. Clerbois
 */
 
@@ -17,7 +15,7 @@ class ad22100 {
   private:
     int temperaturMin;    // valeur de la température minimale en dixième de dégré
     int temperaturMax;    // valeur de la température maximale en dixième de dégré
-	struct { // REV 1.02 9/11/2014
+	struct {          // REV 1.02 9/11/2014
 		int unit : 2;
 		int capteurPin : 14;
 		} option ;
@@ -31,8 +29,8 @@ class ad22100 {
 	void commaSeparator();
 	void dotSeparator();
 	void celsius() { option.unit=0; }; 	// REV 1.02 9/11/2014   
-	void fahrenheit() { option.unit=1; };  // REV 1.02 9/11/2014
-	void kelvin() { option.unit=2; };  // REV 1.02 9/11/2014
+	void fahrenheit() { option.unit=1; };   // REV 1.02 9/11/2014
+	void kelvin() { option.unit=2; };       // REV 1.02 9/11/2014
   };
 
 #endif
